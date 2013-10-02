@@ -1,23 +1,30 @@
-OBJS = main.o evaluator.o evaluator.t.o
-CXXFLAGS = --std=c++0x -g -O6 -I.
+
+SRCS = main.cpp evaluator.cpp evaluator.t.cpp
+HEADERS = evaluator.h elements.h
+OBJS = $(SRCS:.cpp=.o)
+CXXFLAGS = --std=c++0x -g -O3 -I. -Wall
 CC = clang++
 
-main.o : evaluator.o evaluator.t.o
+all: liscpp.tsk
 
+$(OBJS): %.o : $(HEADERS)
+
+.cpp.o:
+	$(CC) -c $(CXXFLAGS) $<
 #StringBuilder.t.o : StringBuilder.h
 
-GTEST :
-	g++ -c /usr/src/gtest/src/gtest-all.cc -I/usr/src/gtest/
+gtest-all.o : /usr/src/gtest/src/gtest-all.cc
+	$(CC) -c /usr/src/gtest/src/gtest-all.cc -I/usr/src/gtest/
 
-build : main.o GTEST
-	g++ $(OBJS) gtest-all.o -o liscpp.tsk -lpthread
+liscpp.tsk: $(OBJS) gtest-all.o
+	$(CC) $(OBJS) gtest-all.o -o liscpp.tsk -lpthread
 
 .PHONY: clean
 
 clean:
 	rm -f gtest-all.o $(OBJS) liscpp.tsk
 
-tests: build
+tests: liscpp.tsk
 	./liscpp.tsk --test
 
 
