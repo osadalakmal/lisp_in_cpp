@@ -2,7 +2,6 @@
 #define INCLUDED_EVALUATOR_H
 
 #include <elements.h>
-#include <list>
 
 class Evaluator {
     private:
@@ -12,7 +11,7 @@ class Evaluator {
 
     public:
         Evaluator() {}
-        DATA_TYPE eval(std::list<Elem*>& elements, Env* env, void*& outVal);
+        Elem* eval(std::shared_ptr<Elem> elements, Env* env);
 };
 
 #endif
