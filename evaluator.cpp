@@ -15,7 +15,7 @@ std::shared_ptr<Elem> Evaluator::eval( std::shared_ptr<Elem> element, Env* env) 
         assert(bool(element->valExp) == false);
         Env* foundEnv = env->findInHier(element->valStr);
         std::shared_ptr<Elem> foundElem = (*foundEnv)[element->valStr];
-        if (foundEnv != nullptr) {
+        if (bool(foundEnv) != false) {
             switch (foundElem->type) {
                 case DATA_TYPE::INT:
                     retVal->valInt = foundElem->valInt;
@@ -30,12 +30,12 @@ std::shared_ptr<Elem> Evaluator::eval( std::shared_ptr<Elem> element, Env* env) 
                     retVal->type = DATA_TYPE::STRING;
                     break;
                 default:
-                    throw new std::runtime_error("Incoorect type for data");
+                    throw std::runtime_error("Incoorect type for data");
                     break;
             }
             return retVal;
         } else {
-            throw new std::runtime_error("No Env with Given Var");
+            throw std::runtime_error("No Env with Given Var");
         }
     } else if (element->type == DATA_TYPE::INT ||
                element->type == DATA_TYPE::STRING ||
@@ -43,12 +43,23 @@ std::shared_ptr<Elem> Evaluator::eval( std::shared_ptr<Elem> element, Env* env) 
         return element;
     } else if (element->type == QUOTE) {
         return element->valExp;
-    }/* else if (elements->front()->type == SET) {
-        auto elemList = reinterpret_cast<std::list<Elem>*>(elements->front()->data);
-        std::string* varName = reinterpret_cast<std::string*>(elemList->front().data);
-        elemList->pop_front();
-        env->d_vars[*varName] = std::shared_ptr<Elem>(new Elem(elemList->front()));
-        elemList->pop_front();
-        return env->d_vars[*varName]->type;
-    }*/
+    } else if (element->type == SET) {
+        assert(bool(element->valExp) == true);
+        auto symbElement = element->valExp;
+        assert(bool(symbElement->valExp) == true);
+        Env* foundEnv = env->findInHier(symbElement->valStr);
+        if (foundEnv != nullptr) {
+            std::shared_ptr<Elem>& foundElem = (*foundEnv)[symbElement->valStr];
+            foundElem = symbElement->valExp;
+            return foundElem;
+        } else {
+            throw std::runtime_error("No Env with Given Var");
+        }
+    } else if (element->type == DEFINE) {
+        assert(bool(element->valExp) == true);
+        auto symbElement = element->valExp;
+        assert(bool(symbElement->valExp) == true);
+        (*env)[symbElement->valStr] = symbElement->valExp;
+        return (*env)[symbElement->valStr];
+    }
 }

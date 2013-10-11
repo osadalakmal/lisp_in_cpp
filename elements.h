@@ -106,10 +106,11 @@ struct Env {
     Env(Env* outer) : d_outer(outer) {
     }
 
-    std::shared_ptr<Elem> operator[](const std::string& key) {
+    std::shared_ptr<Elem>& operator[](const std::string& key) {
         auto it = d_vars.find(key);
         if (it == d_vars.end()) {
-            return nullptr;
+            d_vars[key] = std::shared_ptr<Elem>();
+            return d_vars[key];
         } else {
             return it->second;
         }
@@ -120,7 +121,7 @@ struct Env {
     }
 
     Env* findInHier(const std::string& key) {
-        if (this->operator[](key) != nullptr) {
+        if (bool(this->operator[](key)) != false) {
             return const_cast<Env*>(this);
         } else if (d_outer != nullptr) {
             return d_outer->findInHier(key);
