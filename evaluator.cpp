@@ -12,7 +12,7 @@ std::shared_ptr<Elem> Evaluator::eval( std::shared_ptr<Elem> element, Env* env) 
         return retVal;
     } else if (element->type == SYMBOL) {
         std::shared_ptr<Elem> retVal(new Elem());
-        assert(element->valList.size() == 0);
+        assert(bool(element->valExp) == false);
         Env* foundEnv = env->findInHier(element->valStr);
         std::shared_ptr<Elem> foundElem = (*foundEnv)[element->valStr];
         if (foundEnv != nullptr) {
@@ -41,9 +41,9 @@ std::shared_ptr<Elem> Evaluator::eval( std::shared_ptr<Elem> element, Env* env) 
                element->type == DATA_TYPE::STRING ||
                element->type == DATA_TYPE::DOUBLE) {
         return element;
-    }/* else if (element->type == QUOTE) {
-        return element->data;
-    } else if (elements->front()->type == SET) {
+    } else if (element->type == QUOTE) {
+        return element->valExp;
+    }/* else if (elements->front()->type == SET) {
         auto elemList = reinterpret_cast<std::list<Elem>*>(elements->front()->data);
         std::string* varName = reinterpret_cast<std::string*>(elemList->front().data);
         elemList->pop_front();

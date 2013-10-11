@@ -33,22 +33,15 @@ TEST_F(EvalFixture, ConstDeftest) {
     ASSERT_EQ(res->valInt,5);
 }
 
-/*TEST_F(EvalFixture, QuoteTest) {
-    elems->type = DATA_TYPE::QUOTE;
-    Elem* dataElem = new Elem();
-    dataElem->type = DATA_TYPE::SYMBOL;
-    dataElem->str = "variable";
-    dataElem->data = "osada";
-    //std::shared_ptr<DATA> dataPtr(dataElem);
-    elems->data = std::shared_ptr<DATA>();//dataPtr;
-    DATA data = evaluator->eval(elems, env);
-    std::list<Elem>& elemList = *(reinterpret_cast<std::list<Elem>*>(outData));
-    ASSERT_EQ(elemList.front().type,DATA_TYPE::SYMBOL);
-    ASSERT_STREQ(reinterpret_cast<std::string*>(elemList.front().data)->c_str(),"variable");
-    elemList.pop_front();
-    ASSERT_EQ(elemList.front().type,DATA_TYPE::STRING);
-    ASSERT_STREQ(reinterpret_cast<std::string*>(elemList.front().data)->c_str(),"osada");
-}*/
+TEST_F(EvalFixture, QuoteTest) {
+    std::shared_ptr<Elem> strElem(new Elem());
+    makeStr(strElem, "osada");
+    std::shared_ptr<Elem> quoteElem(new Elem());
+    makeOP(DATA_TYPE::QUOTE, quoteElem, strElem);
+    std::shared_ptr<Elem> res = evaluator->eval(quoteElem, env);
+    ASSERT_EQ(res->type,DATA_TYPE::STRING);
+    ASSERT_STREQ(res->valStr.c_str(),"osada");
+}
 
 /*TEST_F(EvalFixture, SetTest) {
     Elem* elem = new Elem();
