@@ -2,6 +2,7 @@
 #define INCLUDED_EVALUATOR_H
 
 #include <elements.h>
+#include <memory>
 
 class Evaluator {
     private:
@@ -11,7 +12,7 @@ class Evaluator {
 
     public:
         Evaluator() {}
-        Elem* eval(std::shared_ptr<Elem> elements, Env* env);
+        std::shared_ptr<Elem> eval(std::shared_ptr<Elem> elements, Env* env);
 };
 
 #endif

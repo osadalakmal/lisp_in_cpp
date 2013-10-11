@@ -2,7 +2,7 @@
 SRCS = main.cpp elements.cpp evaluator.cpp evaluator.t.cpp
 HEADERS = evaluator.h elements.h
 OBJS = $(SRCS:.cpp=.o)
-CXXFLAGS = --std=c++0x -g -O3 -I. -I/home/osada/progs/projects/boost/boost_1_54_0/
+CXXFLAGS = --std=c++0x -g -O0 -I. -I/home/osada/progs/projects/boost/boost_1_54_0/
 CC = clang++
 
 all: liscpp.tsk

@@ -26,8 +26,47 @@ struct Elem {
     std::string valStr;
     int valInt;
     double valDbl;
-    boost::optional<std::list<Elem> > valList;
+    std::vector<std::shared_ptr<Elem> > valList;
+
+    Elem() : type(DATA_TYPE::NILL), valStr(""), valInt(0), valDbl(0.0)
+            , valList() {
+    }
+
+    Elem(const Elem& other) : type(other.type), valStr(other.valStr), valInt(other.valInt)
+            , valDbl(other.valDbl), valList(other.valList.begin(),other.valList.end()) {
+    }
+
 };
+
+inline void makeSymb(std::shared_ptr<Elem> element, const std::string& val) {
+    element->type = DATA_TYPE::SYMBOL;
+    element->valStr = val;
+}
+
+inline void makeStr(std::shared_ptr<Elem> element, const std::string& val) {
+    element->type = DATA_TYPE::STRING;
+    element->valStr = val;
+}
+
+inline void makeDbl(std::shared_ptr<Elem> element, const double val) {
+    element->type = DATA_TYPE::DOUBLE;
+    element->valDbl = val;
+}
+
+inline void makeInt(std::shared_ptr<Elem> element, const int val) {
+    element->type = DATA_TYPE::INT;
+    element->valInt = val;
+}
+
+inline void makeQuote(std::shared_ptr<Elem> element, const std::string& varName, Elem* valueElement) {
+    element->valStr = "QUOTE";
+    element->type = DATA_TYPE::QUOTE;
+    Elem *varElement = new Elem();
+    varElement->valStr = "variable";
+    varElement->type = DATA_TYPE::SYMBOL;
+    varElement->valList.push_back(std::shared_ptr<Elem>(valueElement));
+    element->valList.push_back(std::shared_ptr<Elem>(varElement));
+}
 
 struct Env {
     typedef std::map<std::string,std::shared_ptr<Elem> > ENV_VAR_TYPE;
@@ -46,12 +85,12 @@ struct Env {
         }
     }
 
-    void insert(const std::string& key, Elem value) {
-        d_vars[key] = std::shared_ptr<Elem>(new Elem(value));
+    void insert(const std::string& key, std::shared_ptr<Elem> value) {
+        d_vars[key] = value;
     }
 
     Env* findInHier(const std::string& key) {
-        if (this->operator[](key) == nullptr) {
+        if (this->operator[](key) != nullptr) {
             return const_cast<Env*>(this);
         } else if (d_outer != nullptr) {
             return d_outer->findInHier(key);

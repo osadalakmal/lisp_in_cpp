@@ -23,14 +23,17 @@ TEST_F(EvalFixture, Paramtest) {
     ASSERT_NO_THROW(evaluator->eval(elems, env));
 }
 
-/*TEST_F(EvalFixture, ConstDeftest) {
-    elems->type = DATA_TYPE::INT;
-    elems->data = 5;
-    DATA data = evaluator->eval(elems, env);
-    ASSERT_EQ(data,DATA(5));
+TEST_F(EvalFixture, ConstDeftest) {
+    std::shared_ptr<Elem> intElem(new Elem());
+    makeInt(intElem,5);
+    env->insert("variable",intElem);
+    std::shared_ptr<Elem> varElem(new Elem());
+    makeSymb(varElem,"variable");
+    std::shared_ptr<Elem> res = evaluator->eval(varElem, env);
+    ASSERT_EQ(res->valInt,5);
 }
 
-TEST_F(EvalFixture, QuoteTest) {
+/*TEST_F(EvalFixture, QuoteTest) {
     elems->type = DATA_TYPE::QUOTE;
     Elem* dataElem = new Elem();
     dataElem->type = DATA_TYPE::SYMBOL;
