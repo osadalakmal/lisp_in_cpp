@@ -1,8 +1,8 @@
 
-SRCS = main.cpp elements.cpp evaluator.cpp evaluator.t.cpp
-HEADERS = evaluator.h elements.h
+SRCS = main.cpp elements.cpp evaluator.cpp parser.cpp evaluator.t.cpp parser.t.cpp
+HEADERS = evaluator.h elements.h parser.h
 OBJS = $(SRCS:.cpp=.o)
-CXXFLAGS = --std=c++0x -g -O0 -I. -I/home/osada/progs/projects/boost/boost_1_54_0/
+CXXFLAGS = --std=c++0x -g -O0 -I. -I/home/osada/progs/projects/boost/boost_1_54_0/ 
 CC = clang++
 
 all: liscpp.tsk
@@ -17,7 +17,7 @@ gtest-all.o : /usr/src/gtest/src/gtest-all.cc
 	$(CC) -c /usr/src/gtest/src/gtest-all.cc -I/usr/src/gtest/
 
 liscpp.tsk: $(OBJS) gtest-all.o
-	$(CC) $(OBJS) gtest-all.o -o liscpp.tsk -lpthread -fno-line
+	$(CC) $(OBJS) gtest-all.o -o liscpp.tsk -Wl,-rpath,/usr/local/lib/ -lpthread -fno-line -L/usr/local/lib -lboost_regex
 
 .PHONY: clean
 

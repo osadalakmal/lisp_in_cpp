@@ -60,5 +60,22 @@ TEST_F(EvalFixture, SetDefTest) {
     ASSERT_STREQ(res->valStr.c_str(),"osada");
 }
 
+/*TEST_F(EvalFixture, SetDefTest) {
+    std::shared_ptr<Elem> strElem(new Elem());
+    makeStr(strElem, "osada");
+    std::shared_ptr<Elem> symbElem(new Elem());
+    makeSymb(symbElem, "variable");
+    symbElem->valExp = strElem;
+    std::shared_ptr<Elem> setElem(new Elem());
+    makeOP(DATA_TYPE::SET, setElem, symbElem);
+    std::shared_ptr<Elem> res;
+    ASSERT_THROW(evaluator->eval(setElem, env),std::runtime_error);
+    std::shared_ptr<Elem> defElem(new Elem());
+    makeOP(DATA_TYPE::DEFINE, defElem, symbElem);
+    ASSERT_NO_THROW(res = evaluator->eval(defElem, env));
+    ASSERT_EQ(res->type,DATA_TYPE::STRING);
+    ASSERT_STREQ(res->valStr.c_str(),"osada");
+}*/
+
 
 
