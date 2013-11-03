@@ -79,3 +79,15 @@ TEST(Parser,ReadFromInt1) {
     ASSERT_EQ(result[2]->type,DATA_TYPE::INT);
     ASSERT_EQ(result[2]->valInt,5);
 }
+
+TEST(Parser,ReadFromInt2) {
+    Parser parser("(quote ((1) (2) (5)))");
+    boost::sregex_token_iterator it = parser.Tokenize();
+    boost::sregex_token_iterator j;
+    it++;
+    elemSet result;
+    ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
+    ASSERT_EQ(result.size(),1);
+    ASSERT_EQ(result[0]->type,DATA_TYPE::PROC);
+    std::cout << result[0] << std::endl;
+}

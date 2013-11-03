@@ -1,4 +1,5 @@
 #include <evaluator.h>
+#include <parser.h>
 #include "gtest/gtest.h"
 
 class EvalFixture : public ::testing::Test {
@@ -34,15 +35,18 @@ TEST_F(EvalFixture, ConstDeftest) {
     ASSERT_EQ(res[0]->valInt,5);
 }
 
-/*TEST_F(EvalFixture, QuoteTest) {
-    std::shared_ptr<Elem> strElem(new Elem());
-    makeStr(strElem, "osada");
-    std::shared_ptr<Elem> quoteElem(new Elem());
-    makeOP(DATA_TYPE::QUOTE, quoteElem, strElem);
-    std::shared_ptr<Elem> res = evaluator->eval(quoteElem, env);
-    ASSERT_EQ(res->type,DATA_TYPE::STRING);
-    ASSERT_STREQ(res->valStr.c_str(),"osada");
-}*/
+TEST_F(EvalFixture, QuoteTest) {
+    Parser parser("(quote ((1) (2)))");
+    boost::sregex_token_iterator it = parser.Tokenize();
+    boost::sregex_token_iterator j;
+    it++;
+    elemSet result;
+    ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
+    std::cout << result[0] << std::endl;
+    auto res = evaluator->eval(result[0], env);
+    //ASSERT_EQ(res->type,DATA_TYPE::STRING);
+    //ASSERT_STREQ(res->valStr.c_str(),"osada");
+}
 
 /*TEST_F(EvalFixture, SetDefTest) {
     std::shared_ptr<Elem> strElem(new Elem());

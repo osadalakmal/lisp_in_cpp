@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <strings.h>
 #include "boost/lexical_cast.hpp"
 
 boost::sregex_token_iterator Parser::Tokenize() {
@@ -12,7 +13,29 @@ boost::sregex_token_iterator Parser::Tokenize() {
     return boost::sregex_token_iterator(d_line.begin(), d_line.end(), boost::regex("\\s+"), -1);
 };
 
+elemSet Parser::parse(std::string& expr) {
+    auto iter = Tokenize();
+    return readFromTokens(iter,boost::sregex_token_iterator());
+}
 
+void loadSymbol(std::string str, std::shared_ptr<Elem> element) {
+    if (strncasecmp(str.c_str(),"quote",strlen("quote")) == 0) {
+        element->type = DATA_TYPE::QUOTE;
+    } else if (strncasecmp(str.c_str(),"if",strlen("if")) == 0) {
+        element->type = DATA_TYPE::IF;
+    } else if (strncasecmp(str.c_str(),"define",strlen("define")) == 0) {
+        element->type = DATA_TYPE::DEFINE;
+    } else if (strncasecmp(str.c_str(),"set",strlen("set")) == 0) {
+        element->type = DATA_TYPE::SET;
+    } else if (strncasecmp(str.c_str(),"lambda",strlen("lambda")) == 0) {
+        element->type = DATA_TYPE::LAMBDA;
+    } else if (strncasecmp(str.c_str(),"begin",strlen("begin")) == 0) {
+        element->type = DATA_TYPE::BEGIN;
+    } else {
+        element->type = DATA_TYPE::STRING;
+        element->valStr = str;
+    }
+}
 
 elemSet Parser::readFromTokens(
         boost::sregex_token_iterator& beginIt, 
@@ -37,15 +60,11 @@ elemSet Parser::readFromTokens(
             }
             beginIt++;
         }
-        if (beginIt != endIt) {
-            beginIt++;
-        }
         procElem->valExp = retVal;
         procElem->type = DATA_TYPE::PROC;
         elemSet procVal = { procElem };
         return procVal;
     } else {
-        elemSet retVal;
         std::shared_ptr<Elem> expRetVal(new Elem());
         try {
             int intVal = boost::lexical_cast<int>(*beginIt);
@@ -57,11 +76,10 @@ elemSet Parser::readFromTokens(
                 expRetVal->valDbl = doubleVal;
                 expRetVal->type = DATA_TYPE::DOUBLE;
             } catch (boost::bad_lexical_cast&) {
-                expRetVal->valStr = (*beginIt);
-                expRetVal->type = DATA_TYPE::STRING;
+                loadSymbol(beginIt->str(),expRetVal);
             }
         }
-        retVal.push_back(expRetVal);
+        elemSet retVal = { expRetVal };
         return retVal;
     }
 }

@@ -1,3 +1,6 @@
+#ifndef INCLUDED_ELEMENTS_H
+#define INCLUDED_ELEMENTS_H
+
 #include <boost/optional.hpp>
 #include <stdint.h>
 #include <string>
@@ -137,3 +140,5 @@ struct Env {
 };
 
 std::ostream& operator<<(std::ostream& out, std::shared_ptr<Elem> elem);
+
+#endif //INCLUDED_ELEMENTS_H

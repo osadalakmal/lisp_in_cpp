@@ -18,6 +18,7 @@ std::ostream& operator<<(std::ostream& out, std::shared_ptr<Elem> elem) {
     }  else if (elem->type == DATA_TYPE::STRING) {
         out << "\"" << elem->valStr << "\"";
     } else {
+        out << convertToStr(elem->type);
     }
     return out;
 }
