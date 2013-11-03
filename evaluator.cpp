@@ -7,6 +7,7 @@ using namespace std;
 elemSet Evaluator::eval( std::shared_ptr<Elem> element, Env* env) {
     assert(env);
     std::vector<std::shared_ptr<Elem> > retVec;
+    //std::cout << element << std::endl;
     if (element->type == DATA_TYPE::NILL) {
         std::shared_ptr<Elem> retVal(new Elem());
         retVal->type = DATA_TYPE::NILL;
@@ -57,6 +58,8 @@ elemSet Evaluator::eval( std::shared_ptr<Elem> element, Env* env) {
         } else {
             throw std::runtime_error("No Env with Given Var");
         }
+    } else if (element->type == DATA_TYPE::PROC) {
+        return eval(element->valExp[0],env);
     } else {
         throw std::runtime_error("I dont know what to do!!");
     }

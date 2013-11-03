@@ -42,7 +42,7 @@ TEST_F(EvalFixture, QuoteTest) {
     it++;
     elemSet result;
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
-    std::cout << result[0] << std::endl;
+    //std::cout << result[0] << std::endl;
     auto res = evaluator->eval(result[0], env);
     //ASSERT_EQ(res->type,DATA_TYPE::STRING);
     //ASSERT_STREQ(res->valStr.c_str(),"osada");

@@ -89,5 +89,5 @@ TEST(Parser,ReadFromInt2) {
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
     ASSERT_EQ(result.size(),1);
     ASSERT_EQ(result[0]->type,DATA_TYPE::PROC);
-    std::cout << result[0] << std::endl;
+    //std::cout << result[0] << std::endl;
 }
