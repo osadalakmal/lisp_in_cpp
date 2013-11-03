@@ -60,7 +60,7 @@ struct Elem {
     std::string valStr;
     int valInt;
     double valDbl;
-    std::shared_ptr<Elem> valExp;
+    std::vector<std::shared_ptr<Elem> > valExp;
 
     Elem() : type(DATA_TYPE::NILL), valStr(""), valInt(0), valDbl(0.0)
             , valExp() {
@@ -70,7 +70,12 @@ struct Elem {
             , valDbl(other.valDbl), valExp(other.valExp) {
     }
 
+    virtual ~Elem() {
+    }
+
 };
+
+typedef std::vector<std::shared_ptr<Elem> > elemSet;
 
 inline void makeSymb(std::shared_ptr<Elem>& element, const std::string& val) {
     element->type = DATA_TYPE::SYMBOL;
@@ -95,7 +100,7 @@ inline void makeInt(std::shared_ptr<Elem>& element, const int val) {
 inline void makeOP(DATA_TYPE opType, std::shared_ptr<Elem>& element, std::shared_ptr<Elem> expElement) {
     element->valStr = convertToStr(opType);
     element->type = opType;
-    element->valExp = expElement;
+    element->valExp.push_back(expElement);
 }
 
 struct Env {
@@ -130,3 +135,5 @@ struct Env {
         }
     }
 };
+
+std::ostream& operator<<(std::ostream& out, std::shared_ptr<Elem> elem);

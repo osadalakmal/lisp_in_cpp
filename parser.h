@@ -1,6 +1,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <elements.h>
+#include <memory>
 #include <vector>
 
 class Parser {
@@ -8,7 +9,9 @@ class Parser {
 public:
     Parser(std::string line) : d_line(line){}
     void parse(); 
-    void readFromTokens();
-    boost::sregex_token_iterator Tokenize(std::string& result);
+    elemSet readFromTokens(
+        boost::sregex_token_iterator& beginIt, 
+        boost::sregex_token_iterator endIt);
+    boost::sregex_token_iterator Tokenize();
     void convertToAtom();
 };
