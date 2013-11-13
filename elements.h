@@ -111,25 +111,26 @@ struct Env {
     ENV_VAR_TYPE d_vars;
     Env* d_outer;
 
-    Env(Env* outer) : d_outer(outer) {
+    Env(Env* outer) : d_outer(outer),d_vars() {
+        d_vars["global"] = std::make_shared<Elem>();
+        d_vars["global"]->type = INT;
+        d_vars["global"]->valInt = 11;
     }
 
-    std::shared_ptr<Elem>& operator[](const std::string& key) {
-        auto it = d_vars.find(key);
-        if (it == d_vars.end()) {
-            d_vars[key] = std::shared_ptr<Elem>();
-            return d_vars[key];
+    void insert(const std::string& key, std::shared_ptr<Elem>& value) {
+        d_vars.insert(std::make_pair(key,std::shared_ptr<Elem>( new Elem())));
+    }
+
+    std::shared_ptr<Elem> find(const std::string& key) {
+        if (this->d_vars.find(key) != this->d_vars.end()) {
+            return (this->d_vars.find(key))->second;
         } else {
-            return it->second;
+            return nullptr;
         }
     }
 
-    void insert(const std::string& key, std::shared_ptr<Elem> value) {
-        d_vars[key] = value;
-    }
-
     Env* findInHier(const std::string& key) {
-        if (bool(this->operator[](key)) != false) {
+        if (this->d_vars.find(key) != this->d_vars.end()) {
             return const_cast<Env*>(this);
         } else if (d_outer != nullptr) {
             return d_outer->findInHier(key);

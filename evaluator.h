@@ -12,8 +12,7 @@ class Evaluator {
 
     public:
         Evaluator() {}
-        elemSet eval(std::shared_ptr<Elem> elements, Env* env);
-        elemSet eval(std::vector<std::shared_ptr<Elem> > element, Env* env);
+        elemSet eval(elemSet element, Env* env);
 
 };
 

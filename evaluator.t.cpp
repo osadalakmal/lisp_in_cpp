@@ -1,5 +1,7 @@
 #include <evaluator.h>
 #include <parser.h>
+#include <memory>
+#include <vector>
 #include "gtest/gtest.h"
 
 class EvalFixture : public ::testing::Test {
@@ -8,10 +10,10 @@ public:
     Evaluator* evaluator;
     Env* global;
     Env* env;
-    std::shared_ptr<Elem> elems;
+    std::vector<std::shared_ptr<Elem> > elems;
 
     EvalFixture() : evaluator(new Evaluator()), global(new Env(NULL)), 
-                    env(new Env(global)), elems(new Elem()) {
+                    env(new Env(global)), elems() {
     }
 
     virtual void SetUp() {
@@ -20,11 +22,20 @@ public:
 };
 
 TEST_F(EvalFixture, Paramtest) {
-    void* someVal;
+    std::shared_ptr<Elem> elementOp = std::make_shared<Elem>();
+    elementOp->type = DATA_TYPE::SET;
+    std::shared_ptr<Elem> element = std::make_shared<Elem>();
+    element->valStr = "variable";
+    std::shared_ptr<Elem> elementVal = std::make_shared<Elem>();
+    elementVal->valInt = 5;
+    elementVal->type = INT;
+    elementOp->valExp.push_back(element);
+    elementOp->valExp.push_back(elementVal);
+    elems.push_back(elementOp);
     ASSERT_NO_THROW(evaluator->eval(elems, env));
 }
 
-TEST_F(EvalFixture, ConstDeftest) {
+/*TEST_F(EvalFixture, ConstDeftest) {
     std::shared_ptr<Elem> intElem(new Elem());
     makeInt(intElem,5);
     env->insert("variable",intElem);
@@ -42,9 +53,11 @@ TEST_F(EvalFixture, QuoteTest) {
     it++;
     elemSet result;
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
-    //std::cout << result[0] << std::endl;
-    auto res = evaluator->eval(result[0], env);
-    //ASSERT_EQ(res->type,DATA_TYPE::STRING);
+    std::cout << result[0] << std::endl;
+    elemSet res = evaluator->eval(result[0], env);
+    std::cout << res.size() << std::endl;
+    std::cout << res[0] << std::endl;
+    //ASSERT_EQ(res->type,DATA_TYPE::PROC;
     //ASSERT_STREQ(res->valStr.c_str(),"osada");
 }
 
