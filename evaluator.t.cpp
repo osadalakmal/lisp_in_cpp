@@ -22,16 +22,8 @@ public:
 };
 
 TEST_F(EvalFixture, Paramtest) {
-    std::shared_ptr<Elem> elementOp = std::make_shared<Elem>();
-    elementOp->type = DATA_TYPE::SET;
-    std::shared_ptr<Elem> element = std::make_shared<Elem>();
-    element->valStr = "variable";
-    std::shared_ptr<Elem> elementVal = std::make_shared<Elem>();
-    elementVal->valInt = 5;
-    elementVal->type = INT;
-    elementOp->valExp.push_back(element);
-    elementOp->valExp.push_back(elementVal);
-    elems.push_back(elementOp);
+    ElemPtr elemOp = makeSetCmd("variable", 5);
+    elems.push_back(elemOp);
     ASSERT_NO_THROW(evaluator->eval(elems, env));
 }
 
@@ -41,7 +33,7 @@ TEST_F(EvalFixture, Paramtest) {
     env->insert("variable",intElem);
     std::shared_ptr<Elem> varElem(new Elem());
     makeSymb(varElem,"variable");
-    elemSet res = evaluator->eval(varElem, env);
+    ElementSet res = evaluator->eval(varElem, env);
     ASSERT_EQ(res[0]->type,DATA_TYPE::INT);
     ASSERT_EQ(res[0]->valInt,5);
 }
@@ -51,10 +43,10 @@ TEST_F(EvalFixture, QuoteTest) {
     boost::sregex_token_iterator it = parser.Tokenize();
     boost::sregex_token_iterator j;
     it++;
-    elemSet result;
+    ElementSet result;
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
     std::cout << result[0] << std::endl;
-    elemSet res = evaluator->eval(result[0], env);
+    ElementSet res = evaluator->eval(result[0], env);
     std::cout << res.size() << std::endl;
     std::cout << res[0] << std::endl;
     //ASSERT_EQ(res->type,DATA_TYPE::PROC;

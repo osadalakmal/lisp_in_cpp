@@ -42,7 +42,7 @@ TEST(Parser,ReadFromBasic) {
     boost::sregex_token_iterator it = parser.Tokenize();
     boost::sregex_token_iterator j;
     it++;
-    elemSet result;
+    ElementSet result;
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
     ASSERT_EQ(result.size(),1);
     ASSERT_EQ(result[0]->type,DATA_TYPE::PROC);
@@ -61,7 +61,7 @@ TEST(Parser,ReadFromInt1) {
     boost::sregex_token_iterator it = parser.Tokenize();
     boost::sregex_token_iterator j;
     it++;
-    elemSet result;
+    ElementSet result;
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
     ASSERT_EQ(result.size(),1);
     ASSERT_EQ(result[0]->type,DATA_TYPE::PROC);
@@ -85,7 +85,7 @@ TEST(Parser,ReadFromInt2) {
     boost::sregex_token_iterator it = parser.Tokenize();
     boost::sregex_token_iterator j;
     it++;
-    elemSet result;
+    ElementSet result;
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
     ASSERT_EQ(result.size(),1);
     ASSERT_EQ(result[0]->type,DATA_TYPE::PROC);

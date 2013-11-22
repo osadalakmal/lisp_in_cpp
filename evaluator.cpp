@@ -4,7 +4,7 @@
 
 using namespace std;
 
-elemSet Evaluator::eval( elemSet elements, Env* env) {
+ElementSet Evaluator::eval( ElementSet elements, Env* env) {
     assert(env);
     std::vector<std::shared_ptr<Elem> > retVec;
     for (std::shared_ptr<Elem> element : elements) {

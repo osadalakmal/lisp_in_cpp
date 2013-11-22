@@ -13,7 +13,7 @@ boost::sregex_token_iterator Parser::Tokenize() {
     return boost::sregex_token_iterator(d_line.begin(), d_line.end(), boost::regex("\\s+"), -1);
 };
 
-elemSet Parser::parse(std::string& expr) {
+ElementSet Parser::parse(std::string& expr) {
     auto iter = Tokenize();
     return readFromTokens(iter,boost::sregex_token_iterator());
 }
@@ -37,13 +37,13 @@ void loadSymbol(std::string str, std::shared_ptr<Elem> element) {
     }
 }
 
-elemSet Parser::readFromTokens(
+ElementSet Parser::readFromTokens(
         boost::sregex_token_iterator& beginIt, 
         boost::sregex_token_iterator endIt) {
     if (beginIt == endIt) {
         throw std::runtime_error("unexpected EOF while reading");
     } else if (beginIt->str() == "(") {
-        elemSet retVal; 
+        ElementSet retVal; 
         std::shared_ptr<Elem> procElem(new Elem());
         beginIt++;
         while ((beginIt != endIt) && (beginIt->str() != ")")) {
@@ -62,7 +62,7 @@ elemSet Parser::readFromTokens(
         }
         procElem->valExp = retVal;
         procElem->type = DATA_TYPE::PROC;
-        elemSet procVal = { procElem };
+        ElementSet procVal = { procElem };
         return procVal;
     } else {
         std::shared_ptr<Elem> expRetVal(new Elem());
@@ -79,7 +79,7 @@ elemSet Parser::readFromTokens(
                 loadSymbol(beginIt->str(),expRetVal);
             }
         }
-        elemSet retVal = { expRetVal };
+        ElementSet retVal = { expRetVal };
         return retVal;
     }
 }

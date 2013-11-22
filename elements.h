@@ -78,36 +78,43 @@ struct Elem {
 
 };
 
-typedef std::vector<std::shared_ptr<Elem> > elemSet;
+typedef std::shared_ptr<Elem> ElemPtr;
+typedef std::vector<ElemPtr> ElementSet;
 
-inline void makeSymb(std::shared_ptr<Elem>& element, const std::string& val) {
+inline void makeSymb(ElemPtr& element, const std::string& val) {
     element->type = DATA_TYPE::SYMBOL;
     element->valStr = val;
 }
 
-inline void makeStr(std::shared_ptr<Elem>& element, const std::string& val) {
+inline void makeValue(ElemPtr& element, const std::string& val) {
     element->type = DATA_TYPE::STRING;
     element->valStr = val;
 }
 
-inline void makeDbl(std::shared_ptr<Elem>& element, const double val) {
+inline void makeValue(ElemPtr& element, const double val) {
     element->type = DATA_TYPE::DOUBLE;
     element->valDbl = val;
 }
 
-inline void makeInt(std::shared_ptr<Elem>& element, const int val) {
+inline void makeValue(ElemPtr& element, const int val) {
     element->type = DATA_TYPE::INT;
     element->valInt = val;
 }
 
-inline void makeOP(DATA_TYPE opType, std::shared_ptr<Elem>& element, std::shared_ptr<Elem> expElement) {
-    element->valStr = convertToStr(opType);
-    element->type = opType;
-    element->valExp.push_back(expElement);
+template <typename T>
+inline ElemPtr makeSetCmd(const std::string& name, const T& value) {
+	ElemPtr elem = std::make_shared<Elem>();
+	ElemPtr varElem = std::make_shared<Elem>();
+	ElemPtr valElem = std::make_shared<Elem>();
+	makeSymb(varElem,name);
+	makeValue(valElem,value);
+	elem->valExp.push_back(varElem);
+	elem->valExp.push_back(valElem);
+	return elem;
 }
 
 struct Env {
-    typedef std::map<std::string,std::shared_ptr<Elem> > ENV_VAR_TYPE;
+    typedef std::map<std::string,ElemPtr > ENV_VAR_TYPE;
     ENV_VAR_TYPE d_vars;
     Env* d_outer;
 
@@ -117,11 +124,11 @@ struct Env {
         d_vars["global"]->valInt = 11;
     }
 
-    void insert(const std::string& key, std::shared_ptr<Elem>& value) {
-        d_vars.insert(std::make_pair(key,std::shared_ptr<Elem>( new Elem())));
+    void insert(const std::string& key, ElemPtr& value) {
+        d_vars.insert(std::make_pair(key,ElemPtr( new Elem())));
     }
 
-    std::shared_ptr<Elem> find(const std::string& key) {
+    ElemPtr find(const std::string& key) {
         if (this->d_vars.find(key) != this->d_vars.end()) {
             return (this->d_vars.find(key))->second;
         } else {
@@ -140,6 +147,6 @@ struct Env {
     }
 };
 
-std::ostream& operator<<(std::ostream& out, std::shared_ptr<Elem> elem);
+std::ostream& operator<<(std::ostream& out, ElemPtr elem);
 
 #endif //INCLUDED_ELEMENTS_H

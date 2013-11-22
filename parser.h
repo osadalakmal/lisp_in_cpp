@@ -11,8 +11,8 @@ class Parser {
     std::string d_line;
 public:
     Parser(std::string line) : d_line(line){}
-    elemSet parse(std::string& expr); 
-    elemSet readFromTokens(
+    ElementSet parse(std::string& expr); 
+    ElementSet readFromTokens(
         boost::sregex_token_iterator& beginIt, 
         boost::sregex_token_iterator endIt);
     boost::sregex_token_iterator Tokenize();
