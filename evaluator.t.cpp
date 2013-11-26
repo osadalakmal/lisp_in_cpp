@@ -25,17 +25,12 @@ TEST_F(EvalFixture, Paramtest) {
     ElemPtr elemOp = makeSetCmd("variable", 5);
     elems.push_back(elemOp);
     ASSERT_NO_THROW(evaluator->eval(elems, env));
-}
-
-/*TEST_F(EvalFixture, ConstDeftest) {
-    std::shared_ptr<Elem> intElem(new Elem());
-    makeInt(intElem,5);
-    env->insert("variable",intElem);
-    std::shared_ptr<Elem> varElem(new Elem());
-    makeSymb(varElem,"variable");
-    ElementSet res = evaluator->eval(varElem, env);
-    ASSERT_EQ(res[0]->type,DATA_TYPE::INT);
-    ASSERT_EQ(res[0]->valInt,5);
+    elemOp = makeVar("variable");
+    elems.clear();
+    elems.push_back(elemOp);
+    auto ret = evaluator->eval(elems, env);
+    ASSERT_EQ(ret[0]->type, DATA_TYPE::INT);
+    ASSERT_EQ(ret[0]->valInt, 5);
 }
 
 TEST_F(EvalFixture, QuoteTest) {
@@ -46,7 +41,7 @@ TEST_F(EvalFixture, QuoteTest) {
     ElementSet result;
     ASSERT_NO_THROW(result = parser.readFromTokens(it,j));
     std::cout << result[0] << std::endl;
-    ElementSet res = evaluator->eval(result[0], env);
+    ElementSet res = evaluator->eval(result, env);
     std::cout << res.size() << std::endl;
     std::cout << res[0] << std::endl;
     //ASSERT_EQ(res->type,DATA_TYPE::PROC;

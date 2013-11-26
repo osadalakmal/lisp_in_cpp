@@ -106,6 +106,7 @@ inline ElemPtr makeSetCmd(const std::string& name, const T& value) {
 	ElemPtr elem = std::make_shared<Elem>();
 	ElemPtr varElem = std::make_shared<Elem>();
 	ElemPtr valElem = std::make_shared<Elem>();
+	elem->type = DATA_TYPE::SET;
 	makeSymb(varElem,name);
 	makeValue(valElem,value);
 	elem->valExp.push_back(varElem);
@@ -113,24 +114,33 @@ inline ElemPtr makeSetCmd(const std::string& name, const T& value) {
 	return elem;
 }
 
+inline ElemPtr makeVar(const std::string& name) {
+	ElemPtr varElem = std::make_shared<Elem>();
+	makeSymb(varElem, name);
+	return varElem;
+}
+
+typedef std::map<std::string,ElemPtr > ENV_VAR_TYPE;
+
 struct Env {
-    typedef std::map<std::string,ElemPtr > ENV_VAR_TYPE;
     ENV_VAR_TYPE d_vars;
     Env* d_outer;
 
-    Env(Env* outer) : d_outer(outer),d_vars() {
+    Env(Env* outer) : d_vars(), d_outer(outer) {
         d_vars["global"] = std::make_shared<Elem>();
         d_vars["global"]->type = INT;
         d_vars["global"]->valInt = 11;
     }
 
     void insert(const std::string& key, ElemPtr& value) {
-        d_vars.insert(std::make_pair(key,ElemPtr( new Elem())));
+        d_vars.insert(std::make_pair(key, value));
     }
 
+    ENV_VAR_TYPE& getMap() { return d_vars; }
+
     ElemPtr find(const std::string& key) {
-        if (this->d_vars.find(key) != this->d_vars.end()) {
-            return (this->d_vars.find(key))->second;
+        if (d_vars.find(key) != d_vars.end()) {
+            return (d_vars.find(key))->second;
         } else {
             return nullptr;
         }

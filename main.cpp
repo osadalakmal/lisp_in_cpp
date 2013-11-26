@@ -19,7 +19,7 @@ void handler(int sig) {
 
 int main(int argc, char* argv[])
 {
-    signal(SIGSEGV,handler);
+    //signal(SIGSEGV,handler);
     if (argc > 1 && strncmp(argv[1],"--test",strlen("--test")) == 0) {
         ::testing::InitGoogleTest(&argc, argv);
         return RUN_ALL_TESTS();

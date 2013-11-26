@@ -4,11 +4,11 @@
 
 using namespace std;
 
-ElementSet Evaluator::eval( ElementSet elements, Env* env) {
+ElementSet Evaluator::eval( const ElementSet& elements, Env* env) {
     assert(env);
     std::vector<std::shared_ptr<Elem> > retVec;
-    for (std::shared_ptr<Elem> element : elements) {
-        //std::cout << element << std::endl;
+    if(elements.size() >= 1) {
+    	auto element = elements[0];
         if (element->type == DATA_TYPE::NILL) {
             std::shared_ptr<Elem> retVal(new Elem());
             retVal->type = DATA_TYPE::NILL;
@@ -18,6 +18,10 @@ ElementSet Evaluator::eval( ElementSet elements, Env* env) {
             std::shared_ptr<Elem> retVal(new Elem());
             assert(element->valExp.size() == 0);
             Env* foundEnv = env->findInHier(element->valStr);
+            if (!foundEnv)
+            	throw std::runtime_error("No such variable found:" + element->valStr);
+            auto map = foundEnv->getMap();
+            for_each(map.begin(),map.end(),[](std::pair<const std::basic_string<char>, std::shared_ptr<Elem> > i) { std::cout << "key:" << i.first << " val:" << i.second << std::endl; });
             std::shared_ptr<Elem> foundElem = foundEnv->find(element->valStr);
             if (bool(foundEnv) != false) {
                 switch (foundElem->type) {
@@ -48,7 +52,8 @@ ElementSet Evaluator::eval( ElementSet elements, Env* env) {
             retVec.push_back(element);
             return retVec;
         } else if (element->type == QUOTE) {
-            return element->valExp;
+        	retVec.assign(elements.begin()+1, elements.end());
+            return retVec;
         } else if (element->type == SET) {
             assert(element->valExp.size() == 2);
             auto elementVar = element->valExp[0];
@@ -61,7 +66,9 @@ ElementSet Evaluator::eval( ElementSet elements, Env* env) {
                 throw std::runtime_error("No Env with Given Var");
             }
         } else if (element->type == DATA_TYPE::PROC) {
-            //return eval(element->valExp[0],env);
+        	auto retVal = eval(element->valExp, env);
+        	retVec.insert(retVec.end(), retVal.begin(), retVal.end());
+        	return retVec;
         } else {
             throw std::runtime_error("I dont know what to do!!");
         }

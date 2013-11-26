@@ -70,12 +70,12 @@ ElementSet Parser::readFromTokens(
             int intVal = boost::lexical_cast<int>(*beginIt);
             expRetVal->valInt = intVal;
             expRetVal->type = DATA_TYPE::INT;
-        } catch (boost::bad_lexical_cast &) {
+        } catch (...) {
             try {
                 double doubleVal = boost::lexical_cast<double>(*beginIt);
                 expRetVal->valDbl = doubleVal;
                 expRetVal->type = DATA_TYPE::DOUBLE;
-            } catch (boost::bad_lexical_cast&) {
+            } catch (...) {
                 loadSymbol(beginIt->str(),expRetVal);
             }
         }

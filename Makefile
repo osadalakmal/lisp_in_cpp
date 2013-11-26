@@ -2,7 +2,7 @@
 SRCS = main.cpp elements.cpp evaluator.cpp parser.cpp evaluator.t.cpp parser.t.cpp
 HEADERS = evaluator.h elements.h parser.h
 OBJS = $(SRCS:.cpp=.o)
-CXXFLAGS = --std=c++0x -g -O0 -I. -I/usr/local/include/
+CXXFLAGS = --std=c++0x -g -O0 -I. -I/usr/local/include/ -Wall -Werror
 CC = clang++
 
 all: liscpp.tsk
